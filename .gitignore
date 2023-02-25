@@ -1,0 +1,10 @@
+# ignore all files in the root folder
+/*
+# ignore all files withouth the lib folder
+!lib/
+!.metadata
+!assets/
+!analysis_options.yaml
+!pubspec.yaml
+!pubspec.lock
+!README.md
