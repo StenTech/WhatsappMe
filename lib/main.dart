@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 //import local files
-import '/list_chats.dart';
+import 'pages/chats/list_chats.dart';
+import 'pages/chats/chat_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,13 +18,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'clone WhatsApp',
       theme: ThemeData(
         // whatsApp theme
         primaryColor: const Color(0xff075e54),
       ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const MyHomePage(title: 'WhatsApp'),
+        '/chat': (context) => const ChatPage(),
+      },
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'WhatsApp'),
+      //home: const MyHomePage(title: 'WhatsApp'),
     );
   }
 }
@@ -38,81 +44,82 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int val1 = 0;
-  List<bool> checked = [false, false, false, false, false];
-
-  void change1(int value) {
-    setState(() {
-      val1 = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
+      initialIndex: 1,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          title: Text(widget.title),
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                // stroke width: 0.5 photo_camera_outlined icon
-                Icons.photo_camera_outlined,
-                color: Colors.white,
-                weight: 0.5,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Theme.of(context).primaryColor,
+            title: Text(widget.title),
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  // stroke width: 0.5 photo_camera_outlined icon
+                  Icons.photo_camera_outlined,
+                  color: Colors.white,
+                  weight: 0.5,
+                ),
               ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.more_vert,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+            bottom: const TabBar(
+              indicatorColor: Colors.white,
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.groups),
+                ),
+                Tab(
+                  text: 'Chats',
+                ),
+                Tab(
+                  text: 'Status',
+                ),
+                Tab(
+                  text: 'Calls',
+                ),
+              ],
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.search,
-                color: Colors.white,
+          ),
+          body: const TabBarView(
+            children: [
+              Center(
+                child: Text('Groups'),
               ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.more_vert,
-                color: Colors.white,
+              Chats(),
+              Center(
+                child: Text('Status'),
               ),
-            ),
-          ],
-          bottom: const TabBar(
-            indicatorColor: Colors.white,
-            tabs: [
-              Tab(
-                icon: Icon(Icons.groups),
-              ),
-              Tab(
-                text: 'Chats',
-              ),
-              Tab(
-                text: 'Status',
-              ),
-              Tab(
-                text: 'Calls',
+              Center(
+                child: Text('Calls'),
               ),
             ],
           ),
-        ),
-        body: const TabBarView(
-          children: [
-            Center(
-              child: Text('Groups'),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {},
+            backgroundColor: Theme.of(context).primaryColor,
+            mini: true,
+            child: const Icon(
+              Icons.message,
+              size: 20,
             ),
-            Chats(),
-            Center(
-              child: Text('Status'),
-            ),
-            Center(
-              child: Text('Calls'),
-            ),
-          ],
-        ),
-      ),
+          )),
     );
   }
 }
@@ -212,7 +219,9 @@ class _ChatsState extends State<Chats> {
                         : const SizedBox()
                   ],
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, "/chat", arguments: e);
+                },
               ))
           .toList(),
     ]);
