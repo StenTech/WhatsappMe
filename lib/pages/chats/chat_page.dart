@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
 
 import 'package:gotest/discussion.dart';
 
@@ -38,28 +39,32 @@ class _ChatPageState extends State<ChatPage> {
                     /*Navigator.pushNamed(context, '/discussion',
                       arguments: {'name': datas['name']});*/
                   },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Le nom de l'utilisateur
-                      Text(
-                        datas['name'],
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 4.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Le nom de l'utilisateur
+                        Text(
+                          datas['name'],
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
 
-                      // Le statut de connexion de l'utilisateur
-                      const Text(
-                        'En ligne',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white60,
+                        // Le statut de connexion de l'utilisateur
+                        const Text(
+                          'En ligne',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white60,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -84,10 +89,17 @@ class _ChatPageState extends State<ChatPage> {
           padding: const EdgeInsets.all(7),
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
-              return Message(
-                content: messages[index]['content'],
-                date: messages[index]['time'],
-                me: messages[index]['emitter'],
+              return Row(
+                mainAxisAlignment: messages[index]['emitter'] == 'me'
+                    ? MainAxisAlignment.end
+                    : MainAxisAlignment.start,
+                children: [
+                  Message(
+                    content: messages[index]['content'],
+                    date: messages[index]['time'],
+                    me: messages[index]['emitter'],
+                  ),
+                ],
               );
             },
             itemCount: messages.length,
@@ -140,60 +152,43 @@ class Message extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 10,
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Card(
-        elevation: 0.3,
-        color: me == 'me' ? Colors.green[100] : Colors.white,
-        shape: me == 'me'
-            ? RoundedRectangleBorder(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
-                side: BorderSide(
-                  color: Colors.grey[300] as Color,
-                  width: 0.0,
-                ),
-              )
-            : RoundedRectangleBorder(
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
-                side: BorderSide(
-                  color: Colors.grey[300] as Color,
-                  width: 1.0,
-                ),
-              ),
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.6,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
+        //alignment: me == 'me' ? Alignment.centerRight : Alignment.centerLeft,
+        //width: 10,
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        child: ChatBubble(
+          elevation: 0.5,
+          //alignment: Alignment.centerLeft,
+          backGroundColor: me == 'me' ? Colors.green[200] : Colors.white70,
+          clipper: me == 'me'
+              ? ChatBubbleClipper1(type: BubbleType.sendBubble)
+              : ChatBubbleClipper1(type: BubbleType.receiverBubble),
+          child: Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.70),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              //me == 'me' ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
                 Text(
                   content,
-                  style: const TextStyle(fontSize: 16.0),
-                  softWrap: true,
+                  style: const TextStyle(height: 1.5, fontSize: 15),
+                  //style: const TextStyle(color: Colors.white),
+                  //softWrap: true,
                 ),
-                const SizedBox(height: 5.0),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    date,
-                    style: TextStyle(fontSize: 12.0, color: Colors.grey[600]),
-                  ),
+                const SizedBox(height: 5),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      date,
+                      style: const TextStyle(color: Colors.black, fontSize: 10),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
